@@ -1,5 +1,4 @@
 import { test, expect } from '../fixtures';
-import { Browser, chromium } from '@playwright/test';
 import { StorageState } from '../src/pages/StorageState';
 import fs from 'fs';
 
@@ -8,18 +7,6 @@ const users = {
 };
 
 const storagePath = 'setStorageState/storageStateFiles/storageState.json';
-
-// let browser: Browser;
-
-// // No global storage instance, since it now requires a Page
-
-// test.beforeAll(async () => {
-//     browser = await chromium.launch();
-// });
-
-// test.afterAll(async () => {
-//     await browser.close();
-// });
 
 test('should login and save storage state', async ({ page }) => {
     const storage = new StorageState(page, storagePath);
