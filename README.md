@@ -2,6 +2,8 @@
 
 This project is created using **Playwright/TypeScript**, **Playwright MCP**, and **Cursor AI**. It demonstrates advanced end-to-end testing with [Playwright](https://playwright.dev/) using the Page Object Model (POM), step definitions, storage state management, and both positive and negative user flows. The demo is based on the [SauceDemo](https://www.saucedemo.com/) sample app.
 
+**Cursor AI** was used to created project from scratch, no line of code was writen, ju fine tuned promts.  **Playwright MCP** was used to define locators and application behaviour. 
+
 ---
 
 ## Features
