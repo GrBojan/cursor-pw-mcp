@@ -35,4 +35,12 @@ export class BasePage {
     }
     return this.page.locator(selector);
   }
+
+  async annotateBrowserVersion(testInfo: any) {
+    const browserVersion = await this.page.context().browser()?.version();
+    testInfo.annotations.push({
+      type: 'browser version',
+      description: browserVersion,
+    });
+  }
 } 

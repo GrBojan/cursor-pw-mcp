@@ -12,7 +12,8 @@ const users = {
 };
 
 test.describe('SauceDemo Login Page', () => {
-    test.only('Locked out user cannot login', async ({ loginPage, page }) => {
+    test.only('Locked out user cannot login', async ({ loginPage, page, basePage }, testInfo) => {
+        await basePage.annotateBrowserVersion(testInfo);
         await loginPage.navigate('/');
         await loginPage.login(users.locked.username, users.locked.password);
         await expect(page.locator('[data-test="error"]')).toBeVisible();

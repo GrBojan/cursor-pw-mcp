@@ -11,8 +11,10 @@ import { CartPage } from './src/pages/CartPage';
 import { CartSteps } from './src/stepDefinitions/CartSteps';
 import { CheckoutPage } from './src/pages/CheckoutPage';
 import { CheckoutSteps } from './src/stepDefinitions/CheckoutSteps';
+import { BasePage } from './src/pages/BasePage';
 
 export const test = base.extend<{
+  basePage: BasePage;
   loginPage: LoginPage;
   signUpPage: SignUpPage;
   homePage: HomePage;
@@ -26,6 +28,10 @@ export const test = base.extend<{
   checkoutPage: CheckoutPage;
   checkoutSteps: CheckoutSteps;
 }>({
+  basePage: async ({ page }, use) => {
+    const basePage = new BasePage(page);
+    await use(basePage);
+  },
   loginPage: async ({ page }, use) => {
     const loginPage = new LoginPage(page);
     await use(loginPage);
