@@ -16,16 +16,17 @@ export class LoginPage extends BasePage {
   }
 
   async login(username: string, password: string): Promise<void> {
-    await this.usernameLocator.fill(username);
-    await this.passwordLocator.fill(password);
-    await this.loginButtonLocator.click();
+    await this.fillElement(this.usernameLocator, username);
+    await this.fillElement(this.passwordLocator, password);
+    await this.clickOnElement(this.loginButtonLocator);
   }
 
   async isErrorVisible(): Promise<boolean> {
+    await this.waitUntilVisible(this.errorMessageLocator);
     return this.errorMessageLocator.isVisible();
   }
 
   async getErrorMessage(): Promise<string> {
-    return (await this.errorMessageLocator.textContent()) ?? '';
+    return await this.getText(this.errorMessageLocator);
   }
 } 

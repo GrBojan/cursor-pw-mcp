@@ -20,10 +20,10 @@ export class StorageState extends BasePage {
     }
 
     async loginAndSave(username: string, password: string, loginUrl: string = '/') {
-        await this.page.goto(loginUrl);
-        await this.page.fill('#user-name', username);
-        await this.page.fill('#password', password);
-        await this.page.click('#login-button');
+        await this.navigate(loginUrl);
+        await this.fillElement(this.page.locator('#user-name'), username);
+        await this.fillElement(this.page.locator('#password'), password);
+        await this.clickOnElement(this.page.locator('#login-button'));
         await this.page.waitForURL('**/inventory.html');
         await this.save();
     }

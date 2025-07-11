@@ -11,29 +11,35 @@ export class BasePage {
     await this.page.goto(url);
   }
 
-  async click(selector: string): Promise<void> {
-    await this.page.click(selector);
+  async waitForPageToBeLoaded() {
+    await this.page.waitForLoadState('load');
   }
 
-  async type(selector: string, text: string): Promise<void> {
-    await this.page.fill(selector, text);
+  /**
+   * Clicks on the specified element.
+   * @param element - The element to click on.
+   */
+  async clickOnElement(element: Locator) {
+    await element.waitFor({ state: 'visible' }).then(async () => {
+      await element.click();
+    });
   }
 
-  async getText(selector: string): Promise<string> {
-    return await this.page.textContent(selector) || '';
+  async enterValue(element: Locator, value: string) {
+    await element.waitFor({ state: 'visible' }).then(async () => {
+      await element.fill(value);
+    });
   }
 
-  async isVisible(selector: string): Promise<boolean> {
-    return await this.page.isVisible(selector);
-  }
-
-  async waitForSelector(selector: string, options?: Parameters<Page['waitForSelector']>[1]): Promise<Locator> {
-    if (options) {
-      await this.page.waitForSelector(selector, options);
-    } else {
-      await this.page.waitForSelector(selector);
-    }
-    return this.page.locator(selector);
+  /**
+   * Waits until the specified element is visible.
+   * @param element - The element to wait for.
+   */
+  async waitUntilVisible(element: Locator) {
+    await element.waitFor({ state: 'visible' }).then(async () => {
+      await element.isVisible();
+    });
+    await this.page.waitForLoadState();
   }
 
   async annotateBrowserVersion(testInfo: any) {
@@ -42,5 +48,33 @@ export class BasePage {
       type: 'browser version',
       description: browserVersion,
     });
+  }
+
+  /**
+   * Fills the specified element with text.
+   * @param element - The element to fill.
+   * @param text - The text to enter.
+   */
+  async fillElement(element: Locator, text: string) {
+    await element.waitFor({state: 'visible'});
+    await element.fill(text);
+  }
+
+  /**
+   * Gets the text content of the specified element.
+   * @param element - The element to get text from.
+   */
+  async getText(element: Locator): Promise<string> {
+    await element.waitFor({state: 'visible'});
+    return (await element.textContent()) ?? '';
+  }
+
+  /**
+   * Checks if the specified element is visible.
+   * @param element - The element to check visibility for.
+   */
+  async isVisible(element: Locator): Promise<boolean> {
+    await element.waitFor({ state: 'visible' });
+    return element.isVisible();
   }
 } 

@@ -20,20 +20,20 @@ export class CheckoutPage extends BasePage {
     }
 
     async fillCheckoutInfo(first: string, last: string, postal: string): Promise<void> {
-        await this.firstNameInput.fill(first);
-        await this.lastNameInput.fill(last);
-        await this.postalCodeInput.fill(postal);
+        await this.fillElement(this.firstNameInput, first);
+        await this.fillElement(this.lastNameInput, last);
+        await this.fillElement(this.postalCodeInput, postal);
     }
 
     async continue(): Promise<void> {
-        await this.continueButton.click();
+        await this.clickOnElement(this.continueButton);
     }
 
     async finish(): Promise<void> {
-        await this.finishButton.click();
+        await this.clickOnElement(this.finishButton);
     }
 
     async getConfirmationMessage(): Promise<string> {
-        return (await this.confirmationMessage.textContent()) || '';
+        return await this.getText(this.confirmationMessage);
     }
 } 

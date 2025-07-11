@@ -12,11 +12,10 @@ export class HomePage extends BasePage {
   }
 
   async isLoggedIn(): Promise<boolean> {
-    return this.logoutButtonLocator.isVisible();
+    return await this.isVisible(this.logoutButtonLocator);
   }
 
   async getWelcomeMessage(): Promise<string> {
-    const text = await this.welcomeMessageLocator.textContent();
-    return text ?? '';
+    return await this.getText(this.welcomeMessageLocator);
   }
 } 

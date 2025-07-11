@@ -16,9 +16,9 @@ export class SignUpPage extends BasePage {
   }
 
   async signUp(username: string, email: string, password: string): Promise<void> {
-    await this.usernameLocator.fill(username);
-    await this.emailLocator.fill(email);
-    await this.passwordLocator.fill(password);
-    await this.signUpButtonLocator.click();
+    await this.fillElement(this.usernameLocator, username);
+    await this.fillElement(this.emailLocator, email);
+    await this.fillElement(this.passwordLocator, password);
+    await this.clickOnElement(this.signUpButtonLocator);
   }
 } 

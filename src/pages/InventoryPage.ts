@@ -46,22 +46,22 @@ export class InventoryPage extends BasePage {
     }
 
     async addItemToCart(index: number): Promise<void> {
-        await this.addToCartButtonLocator.nth(index).click();
+        await this.clickOnElement(this.addToCartButtonLocator.nth(index));
     }
 
     async removeItemFromCart(index: number): Promise<void> {
-        await this.addToCartButtonLocator.nth(index).click();
+        await this.clickOnElement(this.addToCartButtonLocator.nth(index));
     }
 
     async getCartBadgeCount(): Promise<number> {
         if (await this.cartBadgeLocator.count() === 0) return 0;
-        const badge = await this.cartBadgeLocator.first();
-        const text = await badge.textContent();
+        const badge = this.cartBadgeLocator.first();
+        const text = await this.getText(badge);
         return text ? parseInt(text) : 0;
     }
 
     async goToItemDetails(index: number): Promise<void> {
-        await this.itemNameLocator.nth(index).click();
+        await this.clickOnElement(this.itemNameLocator.nth(index));
     }
 
     async sortItems(optionValue: string): Promise<void> {

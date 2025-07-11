@@ -13,8 +13,8 @@ export class CartPage extends BasePage {
         this.checkoutButtonLocator = page.locator('[data-test="checkout"]');
     }
 
-    async navigate(): Promise<void> {
-        await this.page.goto('/cart.html');
+    async goToCartPage(): Promise<void> {
+        await this.navigate('/cart.html');
     }
 
     async getCartItems(): Promise<Locator[]> {
@@ -22,10 +22,10 @@ export class CartPage extends BasePage {
     }
 
     async removeItem(index: number): Promise<void> {
-        await this.removeButtonLocator.nth(index).click();
+        await this.clickOnElement(this.removeButtonLocator.nth(index));
     }
 
     async proceedToCheckout(): Promise<void> {
-        await this.checkoutButtonLocator.click();
+        await this.clickOnElement(this.checkoutButtonLocator);
     }
 } 
