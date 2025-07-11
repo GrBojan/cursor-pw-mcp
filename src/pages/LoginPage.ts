@@ -9,9 +9,9 @@ export class LoginPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.usernameLocator = page.locator('#user-name');
-    this.passwordLocator = page.locator('#password');
-    this.loginButtonLocator = page.locator('#login-button');
+    this.usernameLocator = page.getByRole('textbox', { name: 'Username' });
+    this.passwordLocator = page.getByRole('textbox', { name: 'Password' });
+    this.loginButtonLocator = page.getByRole('button', { name: 'LOGIN' });
     this.errorMessageLocator = page.locator('[data-test="error"]');
   }
 

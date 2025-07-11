@@ -1,5 +1,5 @@
 import { Page, Browser, BrowserContext } from '@playwright/test';
-import fs from 'fs';
+import * as fs from 'fs';
 import { BasePage } from './BasePage';
 
 export class StorageState extends BasePage {
