@@ -1,5 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const isCI = !!process.env.CI;
+
 /**
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
@@ -28,7 +30,7 @@ export default defineConfig({
   workers: undefined,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: process.env.CI ? "blob" : "html",
-  
+
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     testIdAttribute: 'data-test-id',
@@ -48,17 +50,17 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-    //  dependencies: ['setup-storage'],
+      dependencies: isCI ? [] : ['setup-storage'],
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-    //  dependencies: ['setup-storage'],
+      dependencies: isCI ? [] : ['setup-storage'],
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-     // dependencies: ['setup-storage'],
+      dependencies: isCI ? [] : ['setup-storage'],
     },
 
     /* Test against mobile viewports. */
