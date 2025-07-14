@@ -48,17 +48,17 @@ export default defineConfig({
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
-      dependencies: ['setup-storage'],
+    //  dependencies: ['setup-storage'],
     },
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
-      dependencies: ['setup-storage'],
+    //  dependencies: ['setup-storage'],
     },
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
-      dependencies: ['setup-storage'],
+     // dependencies: ['setup-storage'],
     },
 
     /* Test against mobile viewports. */
