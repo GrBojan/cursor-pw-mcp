@@ -23,4 +23,8 @@ export class CheckoutSteps {
     async getConfirmationMessage(): Promise<string> {
         return this.checkout.getConfirmationMessage();
     }
+
+    async gotoCheckoutPage(): Promise<void> {
+        await this.checkout.navigate('/checkout-step-one.html');
+    }
 } 

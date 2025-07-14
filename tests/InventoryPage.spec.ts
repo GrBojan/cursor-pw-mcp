@@ -1,18 +1,18 @@
 import { test, expect } from '../fixtures';
-import { goToInventoryPageStep } from '../helpers/inventoryHelpers';
+import { goToInventoryPage } from '../helpers/navigationHelpers';
 
 test.describe('SauceDemo Inventory Page', () => {
     test.use({ storageState: 'setStorageState/storageStateFiles/storageState.json' });
 
     test('should display a list of inventory items', async ({ inventorySteps }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Check inventory item count', async () => {
             expect(await inventorySteps.getInventoryItemCount()).toBeGreaterThan(0);
         });
     });
 
     test('should display name, description, price, and image for each item', async ({ inventorySteps }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Check item names', async () => {
             const names = await inventorySteps.getItemNames();
             expect(names.length).toBeGreaterThan(0);
@@ -25,7 +25,7 @@ test.describe('SauceDemo Inventory Page', () => {
     });
 
     test('should add an item to the cart', async ({ inventorySteps }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Add first item to cart', async () => {
             await inventorySteps.addItemToCart(0);
         });
@@ -35,7 +35,7 @@ test.describe('SauceDemo Inventory Page', () => {
     });
 
     test('should remove an item from the cart', async ({ inventorySteps }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Add first item to cart', async () => {
             await inventorySteps.addItemToCart(0);
         });
@@ -48,7 +48,7 @@ test.describe('SauceDemo Inventory Page', () => {
     });
 
     test('should navigate to item details page when item is clicked', async ({ inventorySteps, page }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Go to item details', async () => {
             await inventorySteps.goToItemDetails(0);
         });
@@ -58,7 +58,7 @@ test.describe('SauceDemo Inventory Page', () => {
     });
 
     test('should sort items by price low to high', async ({ inventorySteps }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Sort items by price low to high', async () => {
             await inventorySteps.sortItems('lohi');
         });
@@ -71,7 +71,7 @@ test.describe('SauceDemo Inventory Page', () => {
     });
 
     test('should persist cart items after page reload', async ({ inventorySteps, page }) => {
-        await goToInventoryPageStep(inventorySteps, test);
+        await goToInventoryPage(inventorySteps, test);
         await test.step('Add first item to cart', async () => {
             await inventorySteps.addItemToCart(0);
         });
