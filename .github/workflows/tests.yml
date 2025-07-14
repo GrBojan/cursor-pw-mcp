@@ -36,6 +36,9 @@ jobs:
           echo "TEST_PASS_VALID=${{ secrets.TEST_PASS_VALID }}" >> envVariables/.env
           echo "TEST_PASS_INVALID=${{ secrets.TEST_PASS_INVALID }}" >> envVariables/.env
 
+      - name: Show .env file contents
+        run: cat envVariables/.env
+
       - name: Run Playwright tests
         run: npx playwright test --project=chromium
 
