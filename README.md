@@ -1,8 +1,10 @@
 # Playwright Demo Project
 
-This project is created using **Playwright/TypeScript**, **Playwright MCP**, and **Cursor AI**. It demonstrates advanced end-to-end testing with [Playwright](https://playwright.dev/) using the Page Object Model (POM), step definitions, storage state management, and both positive and negative user flows. The demo is based on the [SauceDemo](https://www.saucedemo.com/) sample app.
+[![Tests](https://github.com/GrBojan/cursor-pw-mcp/actions/workflows/tests.yml/badge.svg)](https://github.com/GrBojan/cursor-pw-mcp/actions)
 
-**Cursor AI** was used to created project from scratch, no line of code was writen, ju fine tuned promts.  **Playwright MCP** was used to define locators and application behaviour. 
+This project demonstrates advanced end-to-end testing with [Playwright](https://playwright.dev/) and **TypeScript** using the Page Object Model (POM), robust step definitions, storage state management, and both positive and negative user flows. The demo is based on the [SauceDemo](https://www.saucedemo.com/) sample app.
+
+> **Note:** This project was bootstrapped using **Cursor AI** and **Playwright MCP** for rapid, codegen-driven test development.
 
 ---
 
@@ -12,6 +14,7 @@ This project is created using **Playwright/TypeScript**, **Playwright MCP**, and
 - **Storage State:** Auth/session state is generated in a setup project and reused for fast, reliable tests
 - **Positive & Negative Flows:** Covers both happy path and edge/negative scenarios
 - **TypeScript, Playwright Test, ESLint**
+- **Environment Variables:** Secure credential management for local and CI
 
 ---
 
@@ -29,9 +32,13 @@ This project is created using **Playwright/TypeScript**, **Playwright MCP**, and
 │   ├── CheckoutFlow.spec.ts
 │   ├── InventoryPage.spec.ts
 │   └── LoginFeatures.spec.ts
+├── fixtures/            # Test data and user fixtures
+│   └── users.ts
 ├── fixtures.ts          # Playwright custom fixtures
 ├── playwright.config.ts # Playwright config (projects, storage state, etc.)
 ├── package.json         # Scripts and dependencies
+├── envVariables/        # Environment variables directory
+│   └── .env             # Environment variables (not committed)
 └── README.md            # This file
 ```
 
@@ -44,13 +51,26 @@ This project is created using **Playwright/TypeScript**, **Playwright MCP**, and
    npm install
    ```
 
-2. **Generate storage state (login session):**
+2. **Configure environment variables:**
+   - Copy `envVariables/.env.example` to `envVariables/.env` and fill in credentials, or create `envVariables/.env` manually:
+     ```env
+     TEST_USER_STANDARD=standard_user
+     TEST_USER_LOCKED=locked_out_user
+     TEST_USER_PROBLEM=problem_user
+     TEST_USER_GLITCH=performance_glitch_user
+     TEST_USER_INVALID=invalid_user
+     TEST_PASS_VALID=secret_sauce
+     TEST_PASS_INVALID=wrong_password
+     ```
+   - **Do not commit your `.env` file!**
+
+3. **Generate storage state (login session):**
    ```sh
    npx playwright test --project=setup-storage
    ```
    This will run `setStorageState/StorageState.spec.ts` and create `setStorageState/storageStateFiles/storageState.json`.
 
-3. **Run all tests:**
+4. **Run all tests:**
    ```sh
    npx playwright test
    ```
@@ -59,34 +79,60 @@ This project is created using **Playwright/TypeScript**, **Playwright MCP**, and
 
 ---
 
-## How It Works
+## Usage Examples
 
-- **Storage State:**
-  - The `setup-storage` project logs in and saves the session to a JSON file.
-  - All other tests use this file for authenticated sessions (no need to log in every test).
-- **POM & Steps:**
-  - Each page (Login, Inventory, Cart, Checkout, etc.) has a POM class in `src/pages/`.
-  - Each user flow is abstracted into a step class in `src/stepDefinitions/`.
-  - Tests use only step classes for clarity and maintainability.
-- **Test Coverage:**
-  - Positive flows: login, add to cart, checkout, payment, confirmation
-  - Negative flows: empty cart, missing fields, invalid data, not logged in, etc.
+**Run a specific test file in Chromium:**
+```sh
+npx playwright test tests/LoginFeatures.spec.ts --project=chromium
+```
+
+**Re-run only failed tests:**
+```sh
+npx playwright test --last-failed
+```
+
+**View HTML report:**
+```sh
+npx playwright show-report
+```
 
 ---
 
-## Example Test Output
+## Environment Variables
+- All sensitive credentials are managed via `envVariables/.env` and loaded with [dotenv](https://www.npmjs.com/package/dotenv).
+- Example variables:
+  - `TEST_USER_STANDARD`, `TEST_PASS_VALID`, etc.
+- In CI/CD, set these as secrets/environment variables in your pipeline, or ensure the runner copies/creates the `.env` file at `envVariables/.env`.
+- If you change the path, update the `dotenv.config({ path: 'envVariables/.env' })` call in your setup.
 
-```
-> npx playwright test
+---
 
-Running 10 tests using 5 workers
+## CI/CD
+- Integrate with GitHub Actions, GitLab CI, or other CI tools.
+- Example GitHub Actions workflow:
+  ```yaml
+  name: Playwright Tests
+  on: [push, pull_request]
+  jobs:
+    test:
+      runs-on: ubuntu-latest
+      steps:
+        - uses: actions/checkout@v3
+        - uses: actions/setup-node@v3
+          with:
+            node-version: '18'
+        - run: npm ci
+        - run: npx playwright install --with-deps
+        - run: npx playwright test
+  ```
 
-✓ Checkout Flow › should complete checkout flow for standard user
-✓ Checkout Flow › should block checkout with empty cart
-✓ ...
+---
 
-All tests passed!
-```
+## Troubleshooting
+- **Tests fail due to missing credentials:** Ensure your `envVariables/.env` file is present and correctly filled.
+- **Storage state not working:** Re-run the storage state setup step.
+- **Selectors break after UI changes:** Use Playwright MCP/codegen to regenerate robust selectors.
+- **HTML report not opening:** Run `npx playwright show-report` and open the provided URL in your browser.
 
 ---
 
@@ -103,6 +149,12 @@ All tests passed!
 - [TypeScript](https://www.typescriptlang.org/)
 - [Playwright MCP](https://learn.microsoft.com/en-us/azure/playwright-mcp/)
 - [Cursor AI](https://www.cursor.so/)
+- [dotenv](https://www.npmjs.com/package/dotenv)
+
+---
+
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
 
 ---
 
