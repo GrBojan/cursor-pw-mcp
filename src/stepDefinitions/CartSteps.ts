@@ -9,7 +9,7 @@ export class CartSteps {
     }
 
     async gotoCartPage(): Promise<void> {
-        await this.cart.navigate('');
+        await this.cart.navigate('/cart.html');
     }
 
     async getCartItemCount(): Promise<number> {

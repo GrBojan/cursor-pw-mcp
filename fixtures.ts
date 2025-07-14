@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config({ path: 'envVariables/.env' });
 import { test as base } from '@playwright/test';
 import { LoginPage } from './src/pages/LoginPage';
 import { SignUpPage } from './src/pages/SignUpPage';

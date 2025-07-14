@@ -1,13 +1,13 @@
 import { test, expect } from '../fixtures';
+import { users } from '../fixtures/users';
 
-const users = {
-    standard: { username: 'standard_user', password: 'secret_sauce' },
-    locked: { username: 'locked_out_user', password: 'secret_sauce' },
-    problem: { username: 'problem_user', password: 'secret_sauce' },
-    glitch: { username: 'performance_glitch_user', password: 'secret_sauce' },
-    invalid: { username: 'invalid_user', password: 'wrong_password' },
-    empty: { username: '', password: '' },
-};
+// Helper to ensure string type for Playwright login
+function safeUser(user) {
+    return {
+        username: user.username ?? '',
+        password: user.password ?? '',
+    };
+}
 
 test.describe('SauceDemo Login Page', () => {
     test('Locked out user cannot login', async ({ loginPage, page, basePage }, testInfo) => {
@@ -20,7 +20,8 @@ test.describe('SauceDemo Login Page', () => {
         });
 
         await test.step('Attempt login with locked out user', async () => {
-            await loginPage.login(users.locked.username, users.locked.password);
+            const user = safeUser(users.locked);
+            await loginPage.login(user.username, user.password);
         });
 
         await test.step('Verify error message is visible', async () => {
@@ -37,7 +38,8 @@ test.describe('SauceDemo Login Page', () => {
             await loginPage.navigate('/');
         });
         await test.step('Login as problem user', async () => {
-            await loginPage.login(users.problem.username, users.problem.password);
+            const user = safeUser(users.problem);
+            await loginPage.login(user.username, user.password);
         });
         await test.step('Verify navigation to inventory', async () => {
             await expect(page).toHaveURL(/.*inventory\.html/);
@@ -51,8 +53,9 @@ test.describe('SauceDemo Login Page', () => {
         });
         let duration = 0;
         await test.step('Login as performance glitch user and measure duration', async () => {
+            const user = safeUser(users.glitch);
             const start = Date.now();
-            await loginPage.login(users.glitch.username, users.glitch.password);
+            await loginPage.login(user.username, user.password);
             duration = Date.now() - start;
         });
         await test.step('Verify navigation to inventory', async () => {
@@ -68,7 +71,8 @@ test.describe('SauceDemo Login Page', () => {
             await loginPage.navigate('/');
         });
         await test.step('Login with invalid credentials', async () => {
-            await loginPage.login(users.invalid.username, users.invalid.password);
+            const user = safeUser(users.invalid);
+            await loginPage.login(user.username, user.password);
         });
         await test.step('Verify error message is visible', async () => {
             await expect(page.locator('[data-test="error"]')).toBeVisible();
@@ -83,7 +87,8 @@ test.describe('SauceDemo Login Page', () => {
             await loginPage.navigate('/');
         });
         await test.step('Login with empty fields', async () => {
-            await loginPage.login(users.empty.username, users.empty.password);
+            const user = safeUser(users.empty);
+            await loginPage.login(user.username, user.password);
         });
         await test.step('Verify error message is visible', async () => {
             await expect(page.locator('[data-test="error"]')).toBeVisible();
@@ -123,13 +128,15 @@ test.describe('SauceDemo Login Page', () => {
             await loginPage.navigate('/');
         });
         await test.step('Login with invalid credentials', async () => {
-            await loginPage.login(users.invalid.username, users.invalid.password);
+            const userInvalid = safeUser(users.invalid);
+            await loginPage.login(userInvalid.username, userInvalid.password);
         });
         await test.step('Verify error message is visible', async () => {
             await expect(page.locator('[data-test="error"]')).toBeVisible();
         });
         await test.step('Login with valid credentials', async () => {
-            await loginPage.login(users.standard.username, users.standard.password);
+            const userStandard = safeUser(users.standard);
+            await loginPage.login(userStandard.username, userStandard.password);
         });
         await test.step('Verify error message is not visible', async () => {
             await expect(page.locator('[data-test="error"]')).not.toBeVisible();
@@ -141,7 +148,8 @@ test.describe('SauceDemo Login Page', () => {
             await loginPage.navigate('/');
         });
         await test.step('Login with valid credentials', async () => {
-            await loginPage.login(users.standard.username, users.standard.password);
+            const userStandard = safeUser(users.standard);
+            await loginPage.login(userStandard.username, userStandard.password);
         });
         await test.step('Verify navigation to inventory', async () => {
             await expect(page).toHaveURL(/.*inventory\.html/);
