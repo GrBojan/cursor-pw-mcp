@@ -1,19 +1,20 @@
 name: Playwright Tests
-
 on:
   push:
-    branches: [ main, master ]
+    branches: [main, master]
   pull_request:
-    branches: [ main, master ]
-
-run-name: Playwright Tests - ${{ github.ref_name }} #${{ github.run_number }} by ${{ github.actor }}
-
+    branches: [main, master]
 jobs:
-  playwright:
-    name: 'Playwright Tests'
+  playwright-sharding-docker:
+    name: "Playwright Tests with sharding in docker"
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shardIndex: [1, 2, 3, 4]
+        shardTotal: [4]
     container:
-      image: mcr.microsoft.com/playwright:v1.54.0-noble
+      image: mcr.microsoft.com/playwright:v1.48.1-jammy
       options: --user 1001
     steps:
       - uses: actions/checkout@v4
@@ -22,23 +23,43 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
-        
-      - name: Set up environment variables
-        run: |
-          echo "TEST_USER_STANDARD=${{ secrets.TEST_USER_STANDARD }}" >> .env
-          echo "TEST_USER_LOCKED=${{ secrets.TEST_USER_LOCKED }}" >> .env
-          echo "TEST_USER_PROBLEM=${{ secrets.TEST_USER_PROBLEM }}" >> .env
-          echo "TEST_USER_GLITCH=${{ secrets.TEST_USER_GLITCH }}" >> .env
-          echo "TEST_USER_INVALID=${{ secrets.TEST_USER_INVALID }}" >> .env
-          echo "TEST_PASS_VALID=${{ secrets.TEST_PASS_VALID }}" >> .env
-          echo "TEST_PASS_INVALID=${{ secrets.TEST_PASS_INVALID }}" >> .env
-      - name: Show .env file contents
-        run: cat .env
-      - name: Run your tests
-        run: npx playwright test --project=chromium
-      - name: Upload Playwright HTML report
-        if: always()
+      - name: Run Playwright tests
+        run: npx playwright test --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+
+      - name: Upload blob report to GitHub Actions Artifacts
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report
+          name: blob-report-${{ matrix.shardIndex }}
+          path: blob-report
+          retention-days: 1
+  merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+    if: ${{ !cancelled() }}
+    needs: [playwright-sharding-docker]
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Download blob reports from GitHub Actions Artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge into HTML Report
+        run: npx playwright merge-reports --reporter html ./all-blob-reports
+
+      - name: Upload HTML report
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-report--attempt-${{ github.run_attempt }}
           path: playwright-report
+          retention-days: 14
