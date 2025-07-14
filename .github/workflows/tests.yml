@@ -28,7 +28,6 @@ jobs:
 
       - name: Set up environment variables
         run: |
-          mkdir -p envVariables
           echo "TEST_USER_STANDARD=${{ secrets.TEST_USER_STANDARD }}" >> envVariables/.env
           echo "TEST_USER_LOCKED=${{ secrets.TEST_USER_LOCKED }}" >> envVariables/.env
           echo "TEST_USER_PROBLEM=${{ secrets.TEST_USER_PROBLEM }}" >> envVariables/.env
