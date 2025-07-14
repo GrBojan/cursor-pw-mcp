@@ -15,6 +15,7 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
 - **Positive & Negative Flows:** Covers both happy path and edge/negative scenarios
 - **TypeScript, Playwright Test, ESLint**
 - **Environment Variables:** Secure credential management for local and CI
+- **CI/CD Sharding & Storage State:** Fast, scalable CI with Playwright sharding and pre-generated storage state
 
 ---
 
@@ -108,23 +109,74 @@ npx playwright show-report
 ---
 
 ## CI/CD
-- Integrate with GitHub Actions, GitLab CI, or other CI tools.
-- Example GitHub Actions workflow:
+- **Optimized for GitHub Actions:**
+  - **Two-stage workflow:**
+    1. `setup-storage` job runs once to generate storage state (login/session) and uploads it as an artifact.
+    2. Sharded jobs (`playwright-sharding-docker`) run browser tests in parallel shards, downloading and using the storage state.
+    3. All test results (including setup-storage) are merged into a single Playwright HTML report.
+- **Blob reporting:** Uses Playwright's blob reporter for scalable, parallel test result merging.
+- **Environment variables:** Secrets are injected into `.env` in each job for secure credential management.
+- **Example (simplified):**
   ```yaml
-  name: Playwright Tests
-  on: [push, pull_request]
   jobs:
-    test:
+    setup-storage:
       runs-on: ubuntu-latest
       steps:
-        - uses: actions/checkout@v3
-        - uses: actions/setup-node@v3
+        - run: npx playwright test --project=setup-storage
+        - uses: actions/upload-artifact@v4
           with:
-            node-version: '18'
-        - run: npm ci
-        - run: npx playwright install --with-deps
-        - run: npx playwright test
+            name: storage-state
+            path: setStorageState/storageStateFiles/
+        - uses: actions/upload-artifact@v4
+          with:
+            name: blob-report-setup-storage
+            path: blob-report
+    playwright-sharding-docker:
+      needs: setup-storage
+      strategy:
+        matrix:
+          shardIndex: [1, 2, 3, 4]
+          shardTotal: [4]
+      steps:
+        - uses: actions/download-artifact@v4
+          with:
+            name: storage-state
+            path: setStorageState/storageStateFiles/
+        - run: npx playwright test --project=chromium --shard=${{ matrix.shardIndex }}/${{ matrix.shardTotal }}
+        - uses: actions/upload-artifact@v4
+          with:
+            name: blob-report-${{ matrix.shardIndex }}
+            path: blob-report
+    merge-reports:
+      needs: [playwright-sharding-docker]
+      steps:
+        - uses: actions/download-artifact@v4
+          with:
+            pattern: blob-report-*
+            merge-multiple: true
+        - run: npx playwright merge-reports --reporter html ./all-blob-reports
+        - uses: actions/upload-artifact@v4
+          with:
+            name: html-report
+            path: playwright-report
   ```
+- **See `.github/workflows/tests.yml` for full details.**
+
+---
+
+## Playwright Config Improvements
+- **Conditional dependencies:**
+  - Browser projects (`chromium`, `firefox`, `webkit`) depend on `setup-storage` **only locally** (not in CI), using:
+    ```js
+    const isCI = !!process.env.CI;
+    // ...
+    dependencies: isCI ? [] : ['setup-storage'],
+    ```
+  - This prevents redundant runs in CI but keeps local developer experience smooth.
+- **Maximum parallelism:**
+  - `workers: undefined` lets Playwright use all available CPU cores for fastest test execution.
+- **Blob reporter:**
+  - Uses Playwright's blob reporter in CI for scalable, parallel result merging.
 
 ---
 
