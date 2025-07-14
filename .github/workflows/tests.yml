@@ -18,6 +18,15 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
+      - name: Set up environment variables
+        run: |
+          echo "TEST_USER_STANDARD=${{ secrets.TEST_USER_STANDARD }}" >> .env
+          echo "TEST_USER_LOCKED=${{ secrets.TEST_USER_LOCKED }}" >> .env
+          echo "TEST_USER_PROBLEM=${{ secrets.TEST_USER_PROBLEM }}" >> .env
+          echo "TEST_USER_GLITCH=${{ secrets.TEST_USER_GLITCH }}" >> .env
+          echo "TEST_USER_INVALID=${{ secrets.TEST_USER_INVALID }}" >> .env
+          echo "TEST_PASS_VALID=${{ secrets.TEST_PASS_VALID }}" >> .env
+          echo "TEST_PASS_INVALID=${{ secrets.TEST_PASS_INVALID }}" >> .env
       - name: Run setup-storage
         run: npx playwright test --project=setup-storage
       - name: Upload storage state
@@ -45,6 +54,15 @@ jobs:
           node-version: lts/*
       - name: Install dependencies
         run: npm ci
+      - name: Set up environment variables
+        run: |
+          echo "TEST_USER_STANDARD=${{ secrets.TEST_USER_STANDARD }}" >> .env
+          echo "TEST_USER_LOCKED=${{ secrets.TEST_USER_LOCKED }}" >> .env
+          echo "TEST_USER_PROBLEM=${{ secrets.TEST_USER_PROBLEM }}" >> .env
+          echo "TEST_USER_GLITCH=${{ secrets.TEST_USER_GLITCH }}" >> .env
+          echo "TEST_USER_INVALID=${{ secrets.TEST_USER_INVALID }}" >> .env
+          echo "TEST_PASS_VALID=${{ secrets.TEST_PASS_VALID }}" >> .env
+          echo "TEST_PASS_INVALID=${{ secrets.TEST_PASS_INVALID }}" >> .env
       - name: Download storage state
         uses: actions/download-artifact@v4
         with:
