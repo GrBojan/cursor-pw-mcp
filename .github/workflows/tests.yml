@@ -29,6 +29,12 @@ jobs:
           echo "TEST_PASS_INVALID=${{ secrets.TEST_PASS_INVALID }}" >> .env
       - name: Run setup-storage
         run: npx playwright test --project=setup-storage
+      - name: Upload blob report from setup-storage
+        uses: actions/upload-artifact@v4
+        with:
+          name: blob-report-setup-storage
+          path: blob-report
+          retention-days: 1
       - name: Upload storage state
         uses: actions/upload-artifact@v4
         with:
