@@ -7,10 +7,11 @@ export class FakeApiUsers {
     Password = "LoginPassword";
 
     async createFakeStoreUser() {
+        const random = Math.floor(Math.random() * 1000000);
         const payload = {
-            username: this.LoginUser,
-            email: this.Email,
-            password: this.Password
+            username: `LoginUser${random}`,
+            email: `LoginUser${random}@gmail.com`,
+            password: 'LoginPassword'
         };
     
         const context = await request.newContext({
@@ -20,7 +21,8 @@ export class FakeApiUsers {
         const response = await context.post('https://fakestoreapi.com/users', {
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'User-Agent': 'PlaywrightTest/CI'
             },
             data: payload
         });
