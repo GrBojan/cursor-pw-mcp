@@ -1,5 +1,6 @@
 import { InventoryPage } from '../pages/InventoryPage';
 import { Page } from '@playwright/test';
+import { expect } from '../../fixtures';
 
 export class InventorySteps {
     private inventory: InventoryPage;
@@ -51,5 +52,22 @@ export class InventorySteps {
 
     async sortItems(optionValue: string): Promise<void> {
         await this.inventory.sortItems(optionValue);
+    }
+
+    async assertAllInventoryItemFieldsPresent() {
+        const names = await this.getItemNames();
+        expect(names.length).toBeGreaterThan(0);
+        expect(await this.getItemDescriptions()).toHaveLength(names.length);
+        expect(await this.getItemPrices()).toHaveLength(names.length);
+        const images = await this.getItemImages();
+        expect(images).toHaveLength(names.length);
+        expect(images.every(Boolean)).toBeTruthy();
+    }
+
+    async assertItemsSortedByPriceLowToHigh() {
+        const prices = await this.getItemPrices();
+        const priceNumbers = prices.map(p => parseFloat(p.replace(/[^\d.]/g, '')));
+        const sorted = [...priceNumbers].sort((a, b) => a - b);
+        expect(priceNumbers).toEqual(sorted);
     }
 } 

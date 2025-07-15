@@ -258,7 +258,7 @@ npx playwright test tests/InventoryPage.spec.ts --debug
 ## Technologies Used
 - [Playwright Test](https://playwright.dev/)
 - [TypeScript](https://www.typescriptlang.org/)
-- [Playwright MCP](https://learn.microsoft.com/en-us/azure/playwright-mcp/)
+- [Playwright MCP](https://github.com/microsoft/playwright-mcp)
 - [Cursor AI](https://www.cursor.so/)
 - [dotenv](https://www.npmjs.com/package/dotenv)
 

@@ -13,14 +13,8 @@ test.describe('SauceDemo Inventory Page', () => {
 
     test('should display name, description, price, and image for each item', async ({ inventorySteps }) => {
         await goToInventoryPage(inventorySteps, test);
-        await test.step('Check item names', async () => {
-            const names = await inventorySteps.getItemNames();
-            expect(names.length).toBeGreaterThan(0);
-            expect(await inventorySteps.getItemDescriptions()).toHaveLength(names.length);
-            expect(await inventorySteps.getItemPrices()).toHaveLength(names.length);
-            const images = await inventorySteps.getItemImages();
-            expect(images).toHaveLength(names.length);
-            expect(images.every(Boolean)).toBeTruthy();
+        await test.step('Check all inventory item fields', async () => {
+            await inventorySteps.assertAllInventoryItemFieldsPresent();
         });
     });
 
@@ -63,10 +57,7 @@ test.describe('SauceDemo Inventory Page', () => {
             await inventorySteps.sortItems('lohi');
         });
         await test.step('Check sorted prices', async () => {
-            const prices = await inventorySteps.getItemPrices();
-            const priceNumbers = prices.map(p => parseFloat(p.replace(/[^\d.]/g, '')));
-            const sorted = [...priceNumbers].sort((a, b) => a - b);
-            expect(priceNumbers).toEqual(sorted);
+            await inventorySteps.assertItemsSortedByPriceLowToHigh();
         });
     });
 
