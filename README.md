@@ -4,8 +4,6 @@
 
 This project demonstrates advanced end-to-end testing with [Playwright](https://playwright.dev/) and **TypeScript** using the Page Object Model (POM), robust step definitions, storage state management, and both positive and negative user flows. The demo is based on the [SauceDemo](https://www.saucedemo.com/) sample app.
 
-> **Note:** This project was bootstrapped using **Cursor AI** and **Playwright MCP** for rapid, codegen-driven test development.
-
 ---
 
 ## Features
@@ -51,7 +49,12 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
    npm install
    ```
 
-2. **Configure environment variables:**
+2. **Install Playwright browsers:**
+   ```sh
+   npx playwright install --with-deps
+   ```
+
+3. **Configure environment variables:**
    - Create a `.env` file in the project root and fill in credentials:
      ```env
      TEST_USER_STANDARD=standard_user
@@ -64,13 +67,13 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
      ```
    - **Do not commit your `.env` file!**
 
-3. **Generate storage state (login session):**
+4. **Generate storage state (login session):**
    ```sh
    npx playwright test --project=setup-storage
    ```
    This will run `setStorageState/StorageState.spec.ts` and create `setStorageState/storageStateFiles/storageState.json`.
 
-4. **Run all tests:**
+5. **Run all tests:**
    ```sh
    npx playwright test
    ```
