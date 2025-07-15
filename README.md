@@ -124,6 +124,43 @@ You can adjust the number of shards to match your CPU cores.
 
 ---
 
+## API Tests
+
+This project includes API integration tests using Playwright's APIRequestContext and custom API classes (e.g., `FakeApiUsers`, `ProductApi`).
+
+- API tests are located in the `tests/` directory (e.g., `FakeStoreApi.spec.ts`).
+- API helper classes are in `src/apiCalls/`.
+- The Playwright config defines a dedicated project named `apiTests` for running API tests without storage state dependencies.
+
+**How to run all API tests:**
+```sh
+npx playwright test --project=apiTests
+```
+
+**How to run a specific API test file:**
+```sh
+npx playwright test tests/FakeStoreApi.spec.ts --project=apiTests
+```
+
+**Features:**
+- Uses Playwright's APIRequestContext for HTTP requests
+- Custom API classes for user and product endpoints
+- Console logs for API responses
+- No dependency on browser storage state
+
+**Example API test:**
+```ts
+import { test, expect } from '../fixtures';
+
+test('Create user and list products', async ({ fakeApiUsers, productApi }) => {
+  const userId = await fakeApiUsers.createFakeStoreUser();
+  expect(typeof userId).toBe('number');
+  await productApi.listAllProducts();
+});
+```
+
+---
+
 ## How to Run or Debug a Single Test
 
 **Run a single test file:**

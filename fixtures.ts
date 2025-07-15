@@ -11,6 +11,8 @@ import { CartSteps } from './src/stepDefinitions/CartSteps';
 import { CheckoutPage } from './src/pages/CheckoutPage';
 import { CheckoutSteps } from './src/stepDefinitions/CheckoutSteps';
 import { BasePage } from './src/pages/BasePage';
+import { FakeApiUsers } from './src/apiCalls/FakeApiUsers';
+import { ProductApi } from './src/apiCalls/ProductApi';
 
 export const test = base.extend<{
   basePage: BasePage;
@@ -22,6 +24,8 @@ export const test = base.extend<{
   cartSteps: CartSteps;
   checkoutPage: CheckoutPage;
   checkoutSteps: CheckoutSteps;
+  fakeApiUsers: FakeApiUsers;
+  productApi: ProductApi;
 }>({
   basePage: async ({ page }, use) => {
     const basePage = new BasePage(page);
@@ -58,6 +62,14 @@ export const test = base.extend<{
   checkoutSteps: async ({ page }, use) => {
     const checkoutSteps = new CheckoutSteps(page);
     await use(checkoutSteps);
+  },
+  fakeApiUsers: async ({ }, use) => {
+    const fakeApiUsers = new FakeApiUsers();
+    await use(fakeApiUsers);
+  },
+  productApi: async ({ }, use) => {
+    const productApi = new ProductApi();
+    await use(productApi);
   },
 });
 

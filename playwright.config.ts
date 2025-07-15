@@ -62,6 +62,12 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
       dependencies: isCI ? [] : ['setup-storage'],
     },
+    {
+      name: 'apiTests',
+      use: { ...devices['Desktop Chrome'] },
+      // No dependency on setup-storage
+      dependencies: [],
+    },
 
     /* Test against mobile viewports. */
     // {
