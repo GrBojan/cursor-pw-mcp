@@ -44,6 +44,8 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
 
 ## Setup & Installation
 
+> **Requires Node.js v18 or higher**
+
 1. **Install dependencies:**
    ```sh
    npm install
@@ -80,6 +82,17 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
    - For headed mode: `npm run test:headed`
    - For headless mode: `npm run test:headless`
 
+## How to Update Playwright and Browsers
+
+To update Playwright and its browser binaries to the latest version, run:
+
+```sh
+npm update @playwright/test
+npx playwright install --with-deps
+```
+
+This ensures you have the latest Playwright features and browser versions for testing.
+
 ---
 
 ## Usage Examples
@@ -108,6 +121,29 @@ This uses the script:
 "test:shard:all": "bash -c 'for i in 1 2 3 4 5 6 7 8; do npx playwright test --project=chromium --shard=$i/8 & done; wait'"
 ```
 You can adjust the number of shards to match your CPU cores.
+
+---
+
+## How to Run or Debug a Single Test
+
+**Run a single test file:**
+```sh
+npx playwright test tests/InventoryPage.spec.ts --project=chromium
+```
+
+**Run a single test by name (using -g):**
+```sh
+npx playwright test -g "should complete checkout flow for standard user"
+```
+
+**Debug a test (headed mode with inspector):**
+```sh
+npx playwright test tests/InventoryPage.spec.ts --debug
+```
+
+**Debug in VSCode:**
+- Open the test file in VSCode.
+- Click the "Run" or "Debug" code lens above the test or use the built-in Playwright Test extension for interactive debugging.
 
 ---
 
