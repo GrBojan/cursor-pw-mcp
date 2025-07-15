@@ -38,8 +38,7 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
 ├── fixtures.ts          # Playwright custom fixtures
 ├── playwright.config.ts # Playwright config (projects, storage state, etc.)
 ├── package.json         # Scripts and dependencies
-├── envVariables/        # Environment variables directory
-│   └── .env             # Environment variables (not committed)
+├── .env                 # Environment variables (not committed, project root)
 └── README.md            # This file
 ```
 
@@ -53,7 +52,7 @@ This project demonstrates advanced end-to-end testing with [Playwright](https://
    ```
 
 2. **Configure environment variables:**
-   - Copy `envVariables/.env.example` to `envVariables/.env` and fill in credentials, or create `envVariables/.env` manually:
+   - Create a `.env` file in the project root and fill in credentials:
      ```env
      TEST_USER_STANDARD=standard_user
      TEST_USER_LOCKED=locked_out_user
@@ -97,14 +96,35 @@ npx playwright test --last-failed
 npx playwright show-report
 ```
 
+**Run all tests in 8 shards in parallel (Chromium):**
+```sh
+npm run test:shard:all
+```
+This uses the script:
+```json
+"test:shard:all": "bash -c 'for i in 1 2 3 4 5 6 7 8; do npx playwright test --project=chromium --shard=$i/8 & done; wait'"
+```
+You can adjust the number of shards to match your CPU cores.
+
 ---
 
 ## Environment Variables
-- All sensitive credentials are managed via `envVariables/.env` and loaded with [dotenv](https://www.npmjs.com/package/dotenv).
+- All sensitive credentials are managed via `.env` in the project root and loaded with [dotenv](https://www.npmjs.com/package/dotenv).
 - Example variables:
   - `TEST_USER_STANDARD`, `TEST_PASS_VALID`, etc.
-- In CI/CD, set these as secrets/environment variables in your pipeline, or ensure the runner copies/creates the `.env` file at `envVariables/.env`.
-- If you change the path, update the `dotenv.config({ path: 'envVariables/.env' })` call in your setup.
+- In CI/CD, set these as secrets/environment variables in your pipeline, or ensure the runner copies/creates the `.env` file at the project root.
+- If you change the path, update the `dotenv.config({ path: '.env' })` call in your setup.
+
+---
+
+## Playwright MCP / Codegen
+- Use [Playwright MCP](https://github.com/microsoft/playwright-mcp) for interactive code generation, robust selector analysis, and visual debugging.
+- Start with:
+  ```sh
+  npx playwright-mcp
+  ```
+- Interact with your app in the browser, copy generated code, and use it in your tests or page objects.
+- MCP helps you generate resilient selectors and assertions, and can be used for live debugging and network/console analysis.
 
 ---
 
@@ -181,7 +201,7 @@ npx playwright show-report
 ---
 
 ## Troubleshooting
-- **Tests fail due to missing credentials:** Ensure your `envVariables/.env` file is present and correctly filled.
+- **Tests fail due to missing credentials:** Ensure your `.env` file is present and correctly filled.
 - **Storage state not working:** Re-run the storage state setup step.
 - **Selectors break after UI changes:** Use Playwright MCP/codegen to regenerate robust selectors.
 - **HTML report not opening:** Run `npx playwright show-report` and open the provided URL in your browser.
@@ -213,3 +233,9 @@ Pull requests are welcome! For major changes, please open an issue first to disc
 ## License
 
 ISC 
+
+---
+
+## About Project Creation
+
+> **This project was created and iteratively improved in collaboration with an AI coding assistant (OpenAI GPT-4) and Cursor AI. All code, configuration, and documentation were generated or refactored based on user prompts and AI-driven suggestions, demonstrating a modern, conversational approach to software development.** 
