@@ -14,5 +14,6 @@ test('Create user via Fake Store API and get user id', async ({ fakeApiUsers, pr
 
     await test.step('List all products using ProductApi', async () => {
         await productApi.listAllProducts();
+        console.log(testInfo.project.name);
     });
 });
